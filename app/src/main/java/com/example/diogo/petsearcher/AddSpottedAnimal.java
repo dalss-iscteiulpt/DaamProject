@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -78,9 +79,9 @@ public class AddSpottedAnimal extends AppCompatActivity {
         dateTimeTxt = (TextView) findViewById(R.id.dateTime);
         dateTimeTxt.setText(DateFormat.getDateTimeInstance().format(new Date()));
 
-        Location loc = (Location) getIntent().getParcelableExtra("location");
+        LatLng loc = (LatLng) getIntent().getParcelableExtra("location");
         locTxt = (TextView) findViewById(R.id.locationTxt);
-        locTxt.setText(getRealLocation(loc.getLongitude(), loc.getLatitude()));
+        locTxt.setText(getRealLocation(loc.latitude, loc.longitude));
 
         locBtn = (Button) findViewById(R.id.locationBtn);
         locBtn.setOnClickListener(new View.OnClickListener() {
@@ -94,8 +95,12 @@ public class AddSpottedAnimal extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_PIC_REQUEST) {
-            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-            pic.setImageBitmap(thumbnail);
+            try {
+                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+                pic.setImageBitmap(thumbnail);
+            } catch (NullPointerException exp){
+                return;
+            }
         } else if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
 
@@ -103,8 +108,6 @@ public class AddSpottedAnimal extends AppCompatActivity {
         }
 
     }
-
-
 
 
     protected String getRealLocation(double longitude, double latitude) {

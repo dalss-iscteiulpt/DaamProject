@@ -95,7 +95,7 @@ public class AnimalList extends AppCompatActivity {
                         break;
                     case 1:
                         mDrawerLayout.closeDrawers();
-                        Intent goToMap = new Intent(AnimalList.this, MainMap.class);
+                        Intent goToMap = new Intent(AnimalList.this, MainMapDrawer.class);
                         startActivity(goToMap);
                         break;
                 }

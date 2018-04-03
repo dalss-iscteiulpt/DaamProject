@@ -8,6 +8,7 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -31,17 +32,21 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD3YUG9VVUj4zS_jEzJGglSqIY-V5BeTmU" />
 
+        <activity android:name=".AddSpottedAnimal" />
         <activity
-            android:name=".MainMap"
-            android:label="@string/title_activity_main_map">
+            android:name=".AnimalList"
+            android:theme="@style/generalnotitle" />
+        <activity
+            android:name=".MainMapDrawer"
+            android:label="@string/title_activity_main_map_drawer"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".AddSpottedAnimal"></activity>
-        <activity android:name=".AnimalList" android:theme="@style/generalnotitle" ></activity>
     </application>
 
 </manifest>
