@@ -81,7 +81,7 @@ public class AddSpottedAnimal extends AppCompatActivity {
 
         LatLng loc = (LatLng) getIntent().getParcelableExtra("location");
         locTxt = (TextView) findViewById(R.id.locationTxt);
-        locTxt.setText(getRealLocation(loc.latitude, loc.longitude));
+        locTxt.setText(getRealLocation(loc.longitude, loc.latitude));
 
         locBtn = (Button) findViewById(R.id.locationBtn);
         locBtn.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +115,9 @@ public class AddSpottedAnimal extends AppCompatActivity {
         Geocoder geocoder = new Geocoder(AddSpottedAnimal.this);
         List<Address> addresses = null;
         try {
-            addresses = geocoder.getFromLocation(latitude, longitude,1);
+            addresses = geocoder.getFromLocation(latitude,
+                                                 longitude,
+                                                1);
         } catch (IOException e) {
             e.printStackTrace();
         }
