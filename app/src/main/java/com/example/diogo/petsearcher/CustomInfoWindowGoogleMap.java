@@ -24,14 +24,29 @@ public class CustomInfoWindowGoogleMap implements GoogleMap.InfoWindowAdapter {
 
     @Override
     public View getInfoContents(Marker marker) {
+        String data = marker.getTitle();
+        String[] parsedData = data.split("&&");
+        marker.setSnippet(parsedData[0]);
+
         View view = ((Activity)context).getLayoutInflater()
                 .inflate(R.layout.marker_content, null);
-
         TextView race_txt = view.findViewById(R.id.racetxt);
-        TextView primary_txt = view.findViewById(R.id.dateTxt);
-        TextView secondary_txt = view.findViewById(R.id.secondarytxt);
+        TextView primary_txt = view.findViewById(R.id.primaryTxt);
+        TextView date_txt = view.findViewById(R.id.dateTxt);
+        TextView hourTxt = view.findViewById(R.id.hourTxt);
         ImageView img_view = view.findViewById(R.id.symbolImg);
         img_view.setImageResource(R.drawable.arrow_icon);
+
+        race_txt.setText(parsedData[4]);
+        primary_txt.setText(parsedData[1]);
+        date_txt.setText(parsedData[2]);
+        hourTxt.setText((parsedData[3]));
+
+        return view;
+    }
+
+
+}
 
 //        TextView name_tv = view.findViewById(R.id.tv_title);
 //        TextView details_tv = view.findViewById(R.id.tv_subtitle);
@@ -53,9 +68,3 @@ public class CustomInfoWindowGoogleMap implements GoogleMap.InfoWindowAdapter {
 //        name_tv.setText("Hotel : excellent hotels available");
 //        details_tv.setText("Food : all types of restaurants available");
 //        transport_tv.setText("Reach the site by bus, car and train.");
-
-        return view;
-    }
-
-
-}

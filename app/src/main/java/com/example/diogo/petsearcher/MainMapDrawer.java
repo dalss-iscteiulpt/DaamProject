@@ -2,14 +2,18 @@ package com.example.diogo.petsearcher;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -37,7 +41,9 @@ public class MainMapDrawer extends AppCompatActivity
     private GoogleMap mMap;
     private MapView mapView;
     private Context mContext;
+    private  FirebaseClient fireClient;
     private NavigationView navigationView;
+    private int LOCATION_PERMISSION_REQUEST_CODE = 11;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,27 +70,41 @@ public class MainMapDrawer extends AppCompatActivity
         Button testBtn = findViewById(R.id.listBtn);
         testBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(MainMapDrawer.this, AnimalList.class);
+                Intent intent = new Intent(MainMapDrawer.this, ListPetDrawer.class);
                 startActivity(intent);
             }
         });
+
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Please enable Location services.", Toast.LENGTH_SHORT).show();
-            return;
+        if (ContextCompat.checkSelfPermission(MainMapDrawer.this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                &&
+                ContextCompat.checkSelfPermission(MainMapDrawer.this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            askForLocationPermissions();
+        } else{
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            mMap.setMyLocationEnabled(true);
+            CustomInfoWindowGoogleMap customInfoWindow = new CustomInfoWindowGoogleMap(this);
+            mMap.setInfoWindowAdapter(customInfoWindow);
+            centerMapOnLocation();
+            gMapSetLongClick();
+            gMapSetClick();
+            fireClient = new FirebaseClient(this, null, mMap);
+            fireClient.refreshdata();
+
+
         }
-        mMap.setMyLocationEnabled(true);
-        CustomInfoWindowGoogleMap customInfoWindow = new CustomInfoWindowGoogleMap(this);
-        mMap.setInfoWindowAdapter(customInfoWindow);
-        centerMapOnLocation();
-        gMapSetLongClick();
-        gMapSetClick();
+
+
 //        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 //            @Override
 //            public boolean onMarkerClick(Marker marker) {
@@ -93,6 +113,48 @@ public class MainMapDrawer extends AppCompatActivity
 //        });
 
     }
+
+    private void askForLocationPermissions() {
+
+        // Should we show an explanation?
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+            new android.support.v7.app.AlertDialog.Builder(this)
+                    .setTitle("Location permessions needed")
+                    .setMessage("you need to allow this permission!")
+                    .setPositiveButton("Sure", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(MainMapDrawer.this,
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    LOCATION_PERMISSION_REQUEST_CODE);
+                        }
+                    })
+                    .setNegativeButton("Not now", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+//                                        //Do nothing
+                        }
+                    })
+                    .show();
+
+            // Show an expanation to the user *asynchronously* -- don't block
+            // this thread waiting for the user's response! After the user
+            // sees the explanation, try again to request the permission.
+
+        } else {
+
+            // No explanation needed, we can request the permission.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+
+            // MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION is an
+            // app-defined int constant. The callback method gets the
+            // result of the request.
+        }
+    }
+
+
 
     public void gMapSetClick(){
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -115,6 +177,29 @@ public class MainMapDrawer extends AppCompatActivity
         });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 11:
+                if (isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                   onMapReady(mMap);
+                } else {
+                    Toast.makeText(this, "Can not proceed! i need permission" , Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+    public static boolean isPermissionGranted(@NonNull String[] grantPermissions, @NonNull int[] grantResults,
+                                              @NonNull String permission) {
+        for (int i = 0; i < grantPermissions.length; i++) {
+            if (permission.equals(grantPermissions[i])) {
+                return grantResults[i] == PackageManager.PERMISSION_GRANTED;
+            }
+        }
+        return false;
+    }
+
 
     public void centerMapOnLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -133,21 +218,15 @@ public class MainMapDrawer extends AppCompatActivity
                             .zoom(18)
                             .build()));
                 } catch(Exception e){
-                    Toast.makeText(mContext, "Please enable Location services.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
                 }
             }
         });
 
     }
 
-    public void addMarker(Double lat, Double log){
-        LatLng location = new LatLng(lat, log);
-        mMap.addMarker(new MarkerOptions()
-                .position(location)
-                .title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
 
-    }
 
     @Override
     public void onBackPressed() {
@@ -190,7 +269,7 @@ public class MainMapDrawer extends AppCompatActivity
         if (id == R.id.nav_Map) {
             // Handle the camera action
         } else if (id == R.id.nav_list) {
-            Intent intent = new Intent(MainMapDrawer.this, AnimalList.class);
+            Intent intent = new Intent(MainMapDrawer.this, ListPetDrawer.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_filters) {
@@ -200,6 +279,8 @@ public class MainMapDrawer extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     @Override
     public void onResume() {

@@ -7,9 +7,12 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
     -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-    <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -34,9 +37,6 @@
 
         <activity android:name=".AddSpottedAnimal" />
         <activity
-            android:name=".AnimalList"
-            android:theme="@style/generalnotitle" />
-        <activity
             android:name=".MainMapDrawer"
             android:label="@string/title_activity_main_map_drawer"
             android:theme="@style/AppTheme.NoActionBar">
@@ -45,8 +45,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+        <activity
+            android:name=".ListPetDrawer"
+            android:label="@string/title_activity_list_pet_drawer"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

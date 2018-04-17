@@ -1,24 +1,23 @@
 package com.example.diogo.petsearcher;
 
-import android.media.Image;
-
 /**
  * Created by Diogo on 20/03/2018.
  */
 
+//Alt+Insert Getter and Setter
 public class SpottedAnimal {
 
-    protected int id;
+    protected String id;
     protected String type;
-    protected  String breed;
+    protected String breed;
     protected String primaryC;
     protected String secodnaryC;
-    protected String pattern;
+    protected String gender;
     protected String spotttedDate;
     protected String spottedHour;
     protected String phoneNr;
     protected String email;
-    protected String picture;
+    protected String pictureID;
     protected String realLocation;
     protected String coordLocation;
     protected String commentaries;
@@ -26,11 +25,11 @@ public class SpottedAnimal {
     public SpottedAnimal(){
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -66,12 +65,12 @@ public class SpottedAnimal {
         this.secodnaryC = secodnaryC;
     }
 
-    public String getPattern() {
-        return pattern;
+    public String getGender() {
+        return gender;
     }
 
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getSpotttedDate() {
@@ -106,12 +105,12 @@ public class SpottedAnimal {
         this.email = email;
     }
 
-    public String getPicture() {
-        return picture;
+    public String getPictureID() {
+        return pictureID;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setPictureID(String pictureID) {
+        this.pictureID = pictureID;
     }
 
     public String getRealLocation() {
@@ -137,4 +136,5 @@ public class SpottedAnimal {
     public void setCommentaries(String commentaries) {
         this.commentaries = commentaries;
     }
+
 }
