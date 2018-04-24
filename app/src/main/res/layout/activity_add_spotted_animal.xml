@@ -61,14 +61,25 @@
             android:textColor="@color/common_google_signin_btn_text_dark_focused" />
 
         <EditText
-            android:id="@+id/genderTxt"
+            android:id="@+id/genderTxtAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
             android:paddingHorizontal="20dp"
             android:paddingVertical="20dp"
-            android:text="Pattern"
+            android:text="Gender"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused" />
+
+        <EditText
+            android:id="@+id/sizeTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="20dp"
+            android:text="Size"
             android:textColor="@color/common_google_signin_btn_text_dark_focused" />
 
         <EditText

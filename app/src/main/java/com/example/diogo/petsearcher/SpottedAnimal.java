@@ -1,11 +1,14 @@
 package com.example.diogo.petsearcher;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Diogo on 20/03/2018.
  */
 
 //Alt+Insert Getter and Setter
-public class SpottedAnimal {
+public class SpottedAnimal implements Parcelable{
 
     protected String id;
     protected String type;
@@ -13,6 +16,7 @@ public class SpottedAnimal {
     protected String primaryC;
     protected String secodnaryC;
     protected String gender;
+    protected String size;
     protected String spotttedDate;
     protected String spottedHour;
     protected String phoneNr;
@@ -24,6 +28,36 @@ public class SpottedAnimal {
 
     public SpottedAnimal(){
     }
+
+    public SpottedAnimal(Parcel in){
+        id = in.readString();
+        type = in.readString();
+        breed = in.readString();
+        primaryC = in.readString();
+        secodnaryC = in.readString();
+        gender = in.readString();
+        size = in.readString();
+        spotttedDate = in.readString();
+        spottedHour = in.readString();
+        phoneNr = in.readString();
+        email = in.readString();
+        pictureID = in.readString();
+        realLocation = in.readString();
+        coordLocation = in.readString();
+        commentaries = in.readString();
+    }
+
+    public static final Creator<SpottedAnimal> CREATOR = new Creator<SpottedAnimal>() {
+        @Override
+        public SpottedAnimal createFromParcel(Parcel in) {
+            return new SpottedAnimal(in);
+        }
+
+        @Override
+        public SpottedAnimal[] newArray(int size) {
+            return new SpottedAnimal[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -47,6 +81,14 @@ public class SpottedAnimal {
 
     public void setBreed(String breed) {
         this.breed = breed;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public String getPrimaryC() {
@@ -137,4 +179,27 @@ public class SpottedAnimal {
         this.commentaries = commentaries;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(type);
+        parcel.writeString(breed);
+        parcel.writeString(primaryC);
+        parcel.writeString(secodnaryC);
+        parcel.writeString(gender);
+        parcel.writeString(size);
+        parcel.writeString(spotttedDate);
+        parcel.writeString(spottedHour);
+        parcel.writeString(phoneNr);
+        parcel.writeString(email);
+        parcel.writeString(pictureID);
+        parcel.writeString(realLocation);
+        parcel.writeString(coordLocation);
+        parcel.writeString(commentaries);
+    }
 }

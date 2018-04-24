@@ -52,29 +52,6 @@ public class ListPetDrawer extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-//        animalListHook = new FirebaseGetList();
-//        animalListHook.update(this,animalList);
-
-//        SpottedAnimal testPet = new SpottedAnimal();
-//        testPet.setRealLocation("Test test test test location");
-//        testPet.setCommentaries("commmmmmmmmmmmmmmmmmm fsfdfdsfdsfs sfdfdsfdsfsd sfdfsfsdfdsfs");
-//        testPet.setPrimaryC("Green");
-//        testPet.setSecodnaryC("Blue");
-//        testPet.setEmail("ddfddsfdsf@fdfdsfdsf.com");
-//        testPet.setPhoneNr("982323213123");
-//        testPet.setPictureID("property_image_1");
-//        testPet.setSpotttedDate("22 Jan 2017");
-//        testPet.setSpottedHour("23:00");
-//
-//        animalList.add(testPet);
-//        animalList.add(testPet);
-//        animalList.add(testPet);
-//        animalList.add(testPet);
-//        animalList.add(testPet);
-
-
-//        ArrayAdapter<SpottedAnimal> adapter = new ListPetDrawer.propertyArrayAdapter(this, 0, animalList);
-
         petlist = (ListView) findViewById(R.id.customListView);
         animalListHook= new FirebaseClient(this,petlist,null);
         animalListHook.refreshdata();
@@ -131,58 +108,5 @@ public class ListPetDrawer extends AppCompatActivity
         return true;
     }
 
-//    class propertyArrayAdapter extends ArrayAdapter<SpottedAnimal> {
-//
-//        private Context context;
-//        private List<SpottedAnimal> animalList;
-//
-//        protected DatabaseReference mDatabase;
-//        private StorageReference mStorageRef;
-//
-//        //constructor, call on creation
-//        public propertyArrayAdapter(Context context, int resource, ArrayList<SpottedAnimal> objects) {
-//            super(context, resource, objects);
-//
-//            this.context = context;
-//            this.animalList = objects;
-//
-//            mDatabase = FirebaseDatabase.getInstance().getReference();
-//            mStorageRef = FirebaseStorage.getInstance().getReference();
-//
-//        }
-//
-//        //called when rendering the list
-//        public View getView(int position, View convertView, ViewGroup parent) {
-//
-//            //get the property we are displaying
-//            SpottedAnimal animal = animalList.get(position);
-//
-//            //get the inflater and inflate the XML layout for each item
-//            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-//
-//            //conditionally inflate either standard or special template
-//            View view = inflater.inflate(R.layout.array_format, null);
-//
-//
-//            TextView description = (TextView) view.findViewById(R.id.description);
-//            TextView typeBreedTxt = (TextView) view.findViewById(R.id.desc1txt);
-//            TextView dateTime = (TextView) view.findViewById(R.id.dateTxt);
-//            ImageView image = (ImageView) view.findViewById(R.id.image);
-//
-//            String typeBreed = animal.getType()+" "+animal.getBreed();
-//            String descriptiontxt = "Primary Color: "+animal.getPrimaryC()+"\n"
-//                    +"Secondary Color: "+animal.getSecodnaryC()+"\n"
-//                    +"Gender: "+animal.getGender();
-//            String dateTimetxt = animal.getSpotttedDate()+" "+animal.getSpottedHour();
-//
-//            description.setText(descriptiontxt);
-//            typeBreedTxt.setText(typeBreed);
-//            dateTime.setText(dateTimetxt);
-//            //get the image associated with this property
-//            int imageID = context.getResources().getIdentifier(String.valueOf(animal.getPictureID()), "drawable", context.getPackageName());
-//            image.setImageResource(imageID);
-//
-//            return view;
-//        }
-//    }
+
 }

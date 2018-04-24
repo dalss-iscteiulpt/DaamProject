@@ -42,6 +42,7 @@ public class CustomAdapter extends BaseAdapter {
         return i;
     }
 
+
     @Override
     public View getView(int i, View convertview, ViewGroup viewGroup) {
 
@@ -68,29 +69,10 @@ public class CustomAdapter extends BaseAdapter {
         description.setText(descriptiontxt);
         typeBreedTxt.setText(typeBreed);
         dateTime.setText(dateTimetxt);
-        //get the image associated with this property
-//        int imageID = context.getResources().getIdentifier(String.valueOf(animal.getPictureID()), "drawable", context.getPackageName());
-//        image.setImageResource(imageID);
         PicassoClient.downloadimg(c,animalList.get(i).getPictureID(),image);
 
         return view;
 
-//        if (inflater== null)
-//        {
-//            inflater=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        } if(convertview==null)
-//        {
-//            convertview= inflater.inflate(R.layout.listview_layout,viewGroup,false);
-//
-//        }
-//
-//        MyHolder holder= new MyHolder(convertview);
-//        holder.nameTxt.setText(dogies.get(i).getName());
-//        PicassoClient.downloadimg(c,dogies.get(i).getUrl(),holder.img);
-//
-//
-//
-//        return convertview;
     }
 
 }

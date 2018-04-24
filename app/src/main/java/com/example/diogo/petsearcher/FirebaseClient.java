@@ -5,8 +5,12 @@ package com.example.diogo.petsearcher;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -58,6 +62,7 @@ public class FirebaseClient  {
 
     }
 
+
     public  void refreshdata()
     {
         Query query = mDatabase.orderByChild("id");
@@ -83,6 +88,10 @@ public class FirebaseClient  {
                 .title(data));
     }
 
+    public void onCLickList(){
+
+    }
+
     public void getupdates(DataSnapshot dataSnapshot){
 
         animalList.clear();
@@ -100,6 +109,16 @@ public class FirebaseClient  {
                         if (animalList.size() > 0) {
                             customAdapter = new CustomAdapter(c, animalList);
                             listView.setAdapter((ListAdapter) customAdapter);
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    Intent intent = new Intent(c, PetViewer.class);
+                                    SpottedAnimal intentPet= (SpottedAnimal) adapterView.getItemAtPosition(i);
+                                    intent.putExtra("PetMarker", "None");
+                                    intent.putExtra("PetList", intentPet);
+                                    c.startActivity(intent);
+                                }
+                            });
                         } else {
                             Toast.makeText(c, "No data", Toast.LENGTH_SHORT).show();
                         }

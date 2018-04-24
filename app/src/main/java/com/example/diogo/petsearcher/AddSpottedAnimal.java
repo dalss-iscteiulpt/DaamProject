@@ -6,10 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -27,13 +25,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,6 +42,7 @@ public class AddSpottedAnimal extends AppCompatActivity {
     protected TextView primTxt;
     protected TextView secTxt;
     protected TextView genderTxt;
+    protected TextView sizeTxt;
     protected TextView phoneTxt;
     protected TextView emailTxt;
     protected TextView dateTimeTxt;
@@ -61,6 +57,7 @@ public class AddSpottedAnimal extends AppCompatActivity {
     protected boolean primFirstClick;
     protected boolean secFirstClick;
     protected boolean genderFirstClick;
+    protected boolean sizeFirstClick;
     protected boolean phoneFirstClick;
     protected boolean emailFirstClick;
 
@@ -148,7 +145,7 @@ public class AddSpottedAnimal extends AppCompatActivity {
         });
 
         genderFirstClick = true;
-        genderTxt = (TextView) findViewById(R.id.genderTxt);
+        genderTxt = (TextView) findViewById(R.id.genderTxtAdd);
         genderTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,6 +153,19 @@ public class AddSpottedAnimal extends AppCompatActivity {
                     ((TextView) view).setText("");
                     ((TextView) view).setTextColor(0xFF000000);
                     genderFirstClick = false;
+                }
+            }
+        });
+
+        sizeFirstClick = true;
+        sizeTxt = (TextView) findViewById(R.id.sizeTxt);
+        sizeTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (sizeFirstClick) {
+                    ((TextView) view).setText("");
+                    ((TextView) view).setTextColor(0xFF000000);
+                    sizeFirstClick = false;
                 }
             }
         });
@@ -303,6 +313,7 @@ public class AddSpottedAnimal extends AppCompatActivity {
         animal.setPrimaryC(primTxt.getText().toString());
         animal.setSecodnaryC(secTxt.getText().toString());
         animal.setGender(genderTxt.getText().toString());
+        animal.setSize(sizeTxt.getText().toString());
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         animal.setSpotttedDate(dateFormat.format(date));
         dateFormat = new SimpleDateFormat("HH:mm:ss");

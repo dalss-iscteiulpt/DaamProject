@@ -33,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainMapDrawer extends AppCompatActivity
@@ -90,7 +91,7 @@ public class MainMapDrawer extends AppCompatActivity
                         Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
             askForLocationPermissions();
-        } else{
+        } else {
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
             mMap.setMyLocationEnabled(true);
             CustomInfoWindowGoogleMap customInfoWindow = new CustomInfoWindowGoogleMap(this);
@@ -98,20 +99,12 @@ public class MainMapDrawer extends AppCompatActivity
             centerMapOnLocation();
             gMapSetLongClick();
             gMapSetClick();
+            gMapMarkerSetOnClick();
             fireClient = new FirebaseClient(this, null, mMap);
             fireClient.refreshdata();
 
 
         }
-
-
-//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker) {
-//                return infoWindowAdapter(marker);
-//            }
-//        });
-
     }
 
     private void askForLocationPermissions() {
@@ -154,8 +147,6 @@ public class MainMapDrawer extends AppCompatActivity
         }
     }
 
-
-
     public void gMapSetClick(){
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -173,6 +164,18 @@ public class MainMapDrawer extends AppCompatActivity
                 Intent addAnimal = new Intent(MainMapDrawer.this, AddSpottedAnimal.class);
                 addAnimal.putExtra("location", latLng);
                 startActivity(addAnimal);
+            }
+        });
+    }
+
+    public void gMapMarkerSetOnClick(){
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Intent intent = new Intent(mContext, PetViewer.class);
+                intent.putExtra("PetMarker", marker.getTitle());
+                intent.putExtra("PetList", "None");
+                startActivity(intent);
             }
         });
     }
@@ -209,7 +212,6 @@ public class MainMapDrawer extends AppCompatActivity
             return;
         }
         final Location getLastLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(1));
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             public void onMapLoaded() {
                 try {
