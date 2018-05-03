@@ -91,7 +91,6 @@ public class AddSpottedAnimal extends AppCompatActivity {
 
     protected void startFields() {
 
-
         typeFirstClick = true;
         typeTxt = (TextView) findViewById(R.id.typetxt);
         typeTxt.setOnClickListener(new View.OnClickListener() {

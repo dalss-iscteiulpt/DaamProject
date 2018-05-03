@@ -4,10 +4,15 @@ package com.example.diogo.petsearcher;
  * Created by Diogo on 17/04/2018.
  */
 
+import android.*;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,6 +53,7 @@ public class FirebaseClient  {
     CustomAdapter customAdapter;
     protected DatabaseReference mDatabase;
     private StorageReference mStorageRef;
+    private FilterObject filterObj;
 
 
     public  FirebaseClient(Context c, ListView listView, GoogleMap mapView)
@@ -62,12 +68,23 @@ public class FirebaseClient  {
 
     }
 
+    public Location getLocation(){
+        LocationManager locationManager = (LocationManager) c.getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(c, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(c,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
+        Location lastLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        return lastLocation;
 
-    public  void refreshdata()
-    {
+    }
+
+
+    public  void refreshdata(FilterObject filterObj){
+        this.filterObj = filterObj;
         Query query = mDatabase.orderByChild("id");
         query.addValueEventListener(new ValueEventListener() {
-
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -88,13 +105,43 @@ public class FirebaseClient  {
                 .title(data));
     }
 
-    public void onCLickList(){
+    public SpottedAnimal petVerifier(SpottedAnimal pet){
+        Location actualLocation = getLocation();
+        String[] coords = pet.getCoordLocation().split(",");
+        Location petLocation = new Location("Fire Provider");
+        petLocation.setLatitude(Double.parseDouble(coords[1]));
+        petLocation.setLongitude(Double.parseDouble(coords[0]));
+        Double distance = actualLocation.distanceTo(petLocation)*0.001;
 
+
+        if (!pet.getType().equals(filterObj.getType()) && !filterObj.getType().equals("Any")){
+            pet = null;
+        }
+        if (pet != null && !pet.getPrimaryC().equals(filterObj.getColor()) && !filterObj.getColor().equals("Any")){
+            pet = null;
+        }
+        if (pet != null && !pet.getGender().equals(filterObj.getGender()) && !filterObj.getGender().equals("Any")){
+            pet = null;
+        }
+        if(pet != null && distance > filterObj.getDistance() ){
+            pet = null;
+        }
+        if (pet != null) {
+            animalList.add(pet);
+        }
+
+        return pet;
     }
+
 
     public void getupdates(DataSnapshot dataSnapshot){
 
         animalList.clear();
+        try {
+            mapView.clear();
+        } catch (NullPointerException excp){
+            Log.d("Erro1","NoMapView");
+        }
 
         for(DataSnapshot ds :dataSnapshot.getChildren()){
             final  DataSnapshot dataSnap = ds;
@@ -105,7 +152,7 @@ public class FirebaseClient  {
                     if (listView != null) {
                         SpottedAnimal pet = dataSnap.getValue(SpottedAnimal.class);
                         pet.setPictureID(uri.toString());
-                        animalList.add(pet);
+                        pet = petVerifier(pet);
                         if (animalList.size() > 0) {
                             customAdapter = new CustomAdapter(c, animalList);
                             listView.setAdapter((ListAdapter) customAdapter);
@@ -120,20 +167,26 @@ public class FirebaseClient  {
                                 }
                             });
                         } else {
-                            Toast.makeText(c, "No data", Toast.LENGTH_SHORT).show();
+                            if(pet != null) {
+                                Toast.makeText(c, "No data", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                     if (mapView != null){
                         SpottedAnimal pet = dataSnap.getValue(SpottedAnimal.class);
                         pet.setPictureID(uri.toString());
-                        animalList.add(pet);
-                        if (animalList.size() > 0) {
-                            String[] coords = pet.getCoordLocation().split(",");
-                            String data = pet.id+"&&"+pet.getPrimaryC()+"&&"+pet.getSpotttedDate()+
-                                    "&&"+pet.getSpottedHour()+"&&"+pet.getBreed();
-                            addMarker(Double.parseDouble(coords[1]),Double.parseDouble(coords[0]),mapView,data);
+                        pet = petVerifier(pet);
+                        if (animalList.size() > 0 ) {
+                            if(pet != null) {
+                                String[] coords = pet.getCoordLocation().split(",");
+                                String data = pet.id + "&&" + pet.getPrimaryC() + "&&" + pet.getSpotttedDate() +
+                                        "&&" + pet.getSpottedHour() + "&&" + pet.getBreed();
+                                addMarker(Double.parseDouble(coords[1]), Double.parseDouble(coords[0]), mapView, data);
+                            }
                         } else {
-                            Toast.makeText(c, "No data", Toast.LENGTH_SHORT).show();
+                            if(pet != null) {
+                                Toast.makeText(c, "No data", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 }

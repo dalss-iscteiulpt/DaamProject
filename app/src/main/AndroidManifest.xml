@@ -52,9 +52,11 @@
             android:name=".ListPetDrawer"
             android:label="@string/title_activity_list_pet_drawer"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".PetViewer"
-                 >
-        </activity>
+        <activity android:name=".PetViewer"></activity>
+        <activity
+            android:name=".FiltersActivity"
+            android:label="@string/title_activity_filters"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

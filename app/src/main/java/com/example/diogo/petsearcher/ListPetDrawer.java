@@ -31,10 +31,9 @@ import java.util.List;
 public class ListPetDrawer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
-    private ArrayList<SpottedAnimal> animalList;
     protected ListView petlist;
     protected FirebaseClient animalListHook;
+    protected FilterObject filterObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,11 @@ public class ListPetDrawer extends AppCompatActivity
         setContentView(R.layout.activity_list_pet_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        try {
+            filterObj = (FilterObject) getIntent().getExtras().get("FiltersObject");
+        } catch (NullPointerException excp){
+            filterObj = new FilterObject("Any","Any",10,"Any");
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -54,7 +57,7 @@ public class ListPetDrawer extends AppCompatActivity
 
         petlist = (ListView) findViewById(R.id.customListView);
         animalListHook= new FirebaseClient(this,petlist,null);
-        animalListHook.refreshdata();
+        animalListHook.refreshdata(filterObj);
     }
 
     @Override
@@ -97,16 +100,26 @@ public class ListPetDrawer extends AppCompatActivity
 
         if (id == R.id.nav_Map) {
             Intent intent = new Intent(ListPetDrawer.this, MainMapDrawer.class);
+            intent.putExtra("FiltersObject",filterObj);
             startActivity(intent);
 
         } else if (id == R.id.nav_list) {
 
         } else if (id == R.id.nav_filters) {
+            Intent intent = new Intent(ListPetDrawer.this, FiltersActivity.class);
+            startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+
 
 
 }

@@ -14,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -42,7 +43,8 @@ public class MainMapDrawer extends AppCompatActivity
     private GoogleMap mMap;
     private MapView mapView;
     private Context mContext;
-    private  FirebaseClient fireClient;
+    private FilterObject filterObj;
+    private FirebaseClient fireClient;
     private NavigationView navigationView;
     private int LOCATION_PERMISSION_REQUEST_CODE = 11;
 
@@ -53,6 +55,14 @@ public class MainMapDrawer extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mContext=this;
+        try {
+            filterObj = (FilterObject) getIntent().getExtras().get("FiltersObject");
+            Log.d("Pass2Test",filterObj.toString());
+        } catch (NullPointerException excp){
+            excp.printStackTrace();
+            filterObj = new FilterObject("Any","Any",10,"Any");
+            Log.d("Pass1Test",filterObj.toString());
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -101,7 +111,7 @@ public class MainMapDrawer extends AppCompatActivity
             gMapSetClick();
             gMapMarkerSetOnClick();
             fireClient = new FirebaseClient(this, null, mMap);
-            fireClient.refreshdata();
+            fireClient.refreshdata(filterObj);
 
 
         }
@@ -228,8 +238,6 @@ public class MainMapDrawer extends AppCompatActivity
 
     }
 
-
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -272,9 +280,12 @@ public class MainMapDrawer extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_list) {
             Intent intent = new Intent(MainMapDrawer.this, ListPetDrawer.class);
+            intent.putExtra("FiltersObject",filterObj);
             startActivity(intent);
 
         } else if (id == R.id.nav_filters) {
+            Intent intent = new Intent(MainMapDrawer.this, FiltersActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -309,4 +320,6 @@ public class MainMapDrawer extends AppCompatActivity
         super.onLowMemory();
         mapView.onLowMemory();
     }
+
+
 }
