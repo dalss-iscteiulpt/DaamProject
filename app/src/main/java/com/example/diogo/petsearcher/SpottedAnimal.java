@@ -21,7 +21,8 @@ public class SpottedAnimal implements Parcelable{
     protected String spottedHour;
     protected String phoneNr;
     protected String email;
-    protected String pictureID;
+    protected String pictureIDThumb;
+    protected String pictureIDMain;
     protected String realLocation;
     protected String coordLocation;
     protected String commentaries;
@@ -41,7 +42,7 @@ public class SpottedAnimal implements Parcelable{
         spottedHour = in.readString();
         phoneNr = in.readString();
         email = in.readString();
-        pictureID = in.readString();
+        pictureIDThumb = in.readString();
         realLocation = in.readString();
         coordLocation = in.readString();
         commentaries = in.readString();
@@ -147,12 +148,12 @@ public class SpottedAnimal implements Parcelable{
         this.email = email;
     }
 
-    public String getPictureID() {
-        return pictureID;
+    public String getPictureIDThumb() {
+        return pictureIDThumb;
     }
 
-    public void setPictureID(String pictureID) {
-        this.pictureID = pictureID;
+    public void setPictureIDThumb(String pictureIDThumb) {
+        this.pictureIDThumb = pictureIDThumb;
     }
 
     public String getRealLocation() {
@@ -179,6 +180,14 @@ public class SpottedAnimal implements Parcelable{
         this.commentaries = commentaries;
     }
 
+    public String getPictureIDMain() {
+        return pictureIDMain;
+    }
+
+    public void setPictureIDMain(String pictureIDMain) {
+        this.pictureIDMain = pictureIDMain;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -197,7 +206,7 @@ public class SpottedAnimal implements Parcelable{
         parcel.writeString(spottedHour);
         parcel.writeString(phoneNr);
         parcel.writeString(email);
-        parcel.writeString(pictureID);
+        parcel.writeString(pictureIDThumb);
         parcel.writeString(realLocation);
         parcel.writeString(coordLocation);
         parcel.writeString(commentaries);

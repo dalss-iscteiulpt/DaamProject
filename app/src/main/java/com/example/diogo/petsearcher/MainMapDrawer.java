@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -46,6 +47,7 @@ public class MainMapDrawer extends AppCompatActivity
     private FilterObject filterObj;
     private FirebaseClient fireClient;
     private NavigationView navigationView;
+    private boolean vibrateTrigger = true;
     private int LOCATION_PERMISSION_REQUEST_CODE = 11;
 
     @Override
@@ -55,14 +57,8 @@ public class MainMapDrawer extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mContext=this;
-        try {
-            filterObj = (FilterObject) getIntent().getExtras().get("FiltersObject");
-            Log.d("Pass2Test",filterObj.toString());
-        } catch (NullPointerException excp){
-            excp.printStackTrace();
-            filterObj = new FilterObject("Any","Any",10,"Any");
-            Log.d("Pass1Test",filterObj.toString());
-        }
+
+        intentExtraChecking();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -85,7 +81,15 @@ public class MainMapDrawer extends AppCompatActivity
                 startActivity(intent);
             }
         });
+    }
 
+    public void intentExtraChecking(){
+        try {
+            filterObj = (FilterObject) getIntent().getExtras().get("FiltersObject");
+        } catch (NullPointerException excp){
+            excp.printStackTrace();
+            filterObj = new FilterObject("Any","Any",10,"Any");
+        }
 
     }
 
@@ -171,6 +175,11 @@ public class MainMapDrawer extends AppCompatActivity
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                if (vibrateTrigger) {
+                    Vibrator vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    vb.vibrate(100);
+                }
+
                 Intent addAnimal = new Intent(MainMapDrawer.this, AddSpottedAnimal.class);
                 addAnimal.putExtra("location", latLng);
                 startActivity(addAnimal);
@@ -264,7 +273,7 @@ public class MainMapDrawer extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+           return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -285,6 +294,7 @@ public class MainMapDrawer extends AppCompatActivity
 
         } else if (id == R.id.nav_filters) {
             Intent intent = new Intent(MainMapDrawer.this, FiltersActivity.class);
+            intent.putExtra("FiltersObject",filterObj);
             startActivity(intent);
         }
 

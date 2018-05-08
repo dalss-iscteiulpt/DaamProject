@@ -25,6 +25,7 @@ public class FiltersActivity extends AppCompatActivity
     protected TextView colorFTxt;
     protected TextView genderFTxt;
     protected Button confFBtn;
+    protected FilterObject fObject;
 
 
     @Override
@@ -43,12 +44,16 @@ public class FiltersActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        fObject = (FilterObject) getIntent().getExtras().get("FiltersObject");
         filtersStartFields();
     }
 
     public void filtersStartFields(){
         discreteSeekBar = (DiscreteSeekBar) findViewById(R.id.seekBarDiscrete);
+        discreteSeekBar.setProgress(fObject.getDistance());
+
         typeFTxt = (TextView) findViewById(R.id.typeFiltersTxt);
+        typeFTxt.setText(fObject.getType());
         typeFTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,7 +61,9 @@ public class FiltersActivity extends AppCompatActivity
                 ((TextView) view).setTextColor(0xFF000000);
             }
         });
+
         colorFTxt = (TextView) findViewById(R.id.colorFiltersTxt);
+        colorFTxt.setText(fObject.getColor());
         colorFTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,7 +71,9 @@ public class FiltersActivity extends AppCompatActivity
                 ((TextView) view).setTextColor(0xFF000000);
             }
         });
+
         genderFTxt = (TextView) findViewById(R.id.genderFiltersTxt);
+        genderFTxt.setText(fObject.getGender());
         genderFTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,18 +86,19 @@ public class FiltersActivity extends AppCompatActivity
         confFBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String type = "Any";
                 String color = "Any";
                 int distance = discreteSeekBar.getProgress();
                 String gender = "Any";
+
                 if (!typeFTxt.getText().toString().equals(""))
                     type = typeFTxt.getText().toString();
                 if (!colorFTxt.getText().toString().equals(""))
                     color = colorFTxt.getText().toString();
                 if (!genderFTxt.getText().toString().equals(""))
                     gender = genderFTxt.getText().toString();
-                FilterObject fObject = new FilterObject(type,color,distance,gender);
+                fObject = new FilterObject(type,color,distance,gender);
+
                 Intent intent = new Intent(FiltersActivity.this, MainMapDrawer.class);
                 intent.putExtra("FiltersObject",fObject);
                 Log.d("Passing",fObject.toString());
@@ -137,9 +147,11 @@ public class FiltersActivity extends AppCompatActivity
 
         if (id == R.id.nav_Map) {
             Intent intent = new Intent(FiltersActivity.this, MainMapDrawer.class);
+            intent.putExtra("FiltersObject",fObject);
             startActivity(intent);
         } else if (id == R.id.nav_list) {
             Intent intent = new Intent(FiltersActivity.this, ListPetDrawer.class);
+            intent.putExtra("FiltersObject",fObject);
             startActivity(intent);
 
         } else if (id == R.id.nav_filters) {

@@ -107,6 +107,7 @@ public class ListPetDrawer extends AppCompatActivity
 
         } else if (id == R.id.nav_filters) {
             Intent intent = new Intent(ListPetDrawer.this, FiltersActivity.class);
+            intent.putExtra("FiltersObject",filterObj);
             startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

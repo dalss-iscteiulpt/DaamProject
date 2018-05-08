@@ -69,7 +69,7 @@ public class CustomAdapter extends BaseAdapter {
         description.setText(descriptiontxt);
         typeBreedTxt.setText(typeBreed);
         dateTime.setText(dateTimetxt);
-        PicassoClient.downloadimg(c,animalList.get(i).getPictureID(),image);
+        PicassoClient.downloadimg(c,animalList.get(i).getPictureIDThumb(),image);
 
         return view;
 

@@ -9,6 +9,9 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Callback;
+
 public class CustomInfoWindowGoogleMap implements GoogleMap.InfoWindowAdapter {
 
     private Context context;
@@ -36,35 +39,48 @@ public class CustomInfoWindowGoogleMap implements GoogleMap.InfoWindowAdapter {
         TextView hourTxt = view.findViewById(R.id.hourTxt);
         ImageView img_view = view.findViewById(R.id.symbolImg);
         img_view.setImageResource(R.drawable.arrow_icon);
+        ImageView thumbPic = view.findViewById(R.id.markerImageView);
 
         race_txt.setText(parsedData[4]);
         primary_txt.setText(parsedData[1]);
         date_txt.setText(parsedData[2]);
         hourTxt.setText((parsedData[3]));
+//        PicassoClient.downloadimg(context,parsedData[5],thumbPic);
+        Picasso.with(context).load(parsedData[5]).placeholder(R.drawable.img_001).into(thumbPic,new MarkerCallback(marker));
 
         return view;
     }
 
+    // Callback is an interface from Picasso:
+    static class MarkerCallback implements Callback
+    {
+        Marker marker = null;
 
+        MarkerCallback(Marker marker)
+        {
+            this.marker = marker;
+        }
+
+        @Override
+        public void onError() {}
+
+        @Override
+        public void onSuccess()
+        {
+            if (marker == null)
+            {
+                return;
+            }
+
+            if (!marker.isInfoWindowShown())
+            {
+                return;
+            }
+
+            // If Info Window is showing, then refresh it's contents:
+
+            marker.hideInfoWindow(); // Calling only showInfoWindow() throws an error
+            marker.showInfoWindow();
+        }
+    }
 }
-
-//        TextView name_tv = view.findViewById(R.id.tv_title);
-//        TextView details_tv = view.findViewById(R.id.tv_subtitle);
-//        ImageView img = view.findViewById(R.id.pic);
-
-//        TextView hotel_tv = view.findViewById(R.id.hotels);
-//        TextView food_tv = view.findViewById(R.id.food);
-//        TextView transport_tv = view.findViewById(R.id.transport);
-
-//        name_tv.setText(marker.getTitle());
-//        details_tv.setText(marker.getSnippet());
-
-//        InfoWindowData infoWindowData = (InfoWindowData) marker.getTag();
-//
-//        int imageId = context.getResources().getIdentifier(infoWindowData.getImage().toLowerCase(),
-//                "drawable", context.getPackageName());
-//        img.setImageResource(imageId);
-//
-//        name_tv.setText("Hotel : excellent hotels available");
-//        details_tv.setText("Food : all types of restaurants available");
-//        transport_tv.setText("Reach the site by bus, car and train.");

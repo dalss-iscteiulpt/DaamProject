@@ -1,23 +1,10 @@
 package com.example.diogo.petsearcher;
 
-import android.*;
-import android.Manifest;
-import android.app.ActionBar;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,11 +27,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
-import java.util.ArrayList;
-
 public class PetViewer extends AppCompatActivity{
-
-    protected SpottedAnimal petFromList;
     protected String petId;
     protected DatabaseReference mDatabase;
     private StorageReference mStorageRef;
@@ -70,15 +53,14 @@ public class PetViewer extends AppCompatActivity{
         setContentView(R.layout.activity_pet_viewer);
         startActionBar();
         startFields();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         try {
-            petFromList = (SpottedAnimal) getIntent().getExtras().get("PetList");
-            setFields(petFromList);
+            SpottedAnimal petFromList = (SpottedAnimal) getIntent().getExtras().get("PetList");
+            resolveMarkerItemFirebase(petFromList.getId());
         } catch (ClassCastException exp){
             String data = (String) getIntent().getExtras().get("PetMarker");
-            petId = data.split("&&")[0];
-            mDatabase = FirebaseDatabase.getInstance().getReference();
-            mStorageRef = FirebaseStorage.getInstance().getReference();
-            resolveMarkerItemFirebase(petId);
+            resolveMarkerItemFirebase(data.split("&&")[0]);
         }
 
     }
@@ -90,11 +72,11 @@ public class PetViewer extends AppCompatActivity{
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds :dataSnapshot.getChildren()){
                     final DataSnapshot dataSnap = ds;
-                    mStorageRef.child("picture_"+idKey).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    mStorageRef.child("picture_Main"+idKey).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             SpottedAnimal petMarker = dataSnap.getValue(SpottedAnimal.class);
-                            petMarker.setPictureID(uri.toString());
+                            petMarker.setPictureIDMain(uri.toString());
                             setFields(petMarker);
                         }
                     });
@@ -136,7 +118,7 @@ public class PetViewer extends AppCompatActivity{
         sizeTxt.setText(pet.getSize());
         phoneNrTxt.setText(pet.getPhoneNr());
         emailTxt.setText(pet.getEmail());
-        PicassoClient.downloadimg(this, pet.getPictureID(),petImg);
+        PicassoClient.downloadimg(this, pet.getPictureIDMain(),petImg);
     }
 
     public void addMarkerAndZoom(SpottedAnimal pet){

@@ -14,8 +14,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +24,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:name=".GenericFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -37,7 +46,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD3YUG9VVUj4zS_jEzJGglSqIY-V5BeTmU" />
 
-        <activity android:name=".AddSpottedAnimal" />
+        <activity android:name=".AddSpottedAnimal"
+            android:label="@string/title_activity_add_animal"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".MainMapDrawer"
             android:label="@string/title_activity_main_map_drawer"
@@ -52,11 +63,12 @@
             android:name=".ListPetDrawer"
             android:label="@string/title_activity_list_pet_drawer"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".PetViewer"></activity>
+        <activity android:name=".PetViewer"
+            android:label="@string/title_activity_pet_Viewer"/>
         <activity
             android:name=".FiltersActivity"
             android:label="@string/title_activity_filters"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -4,7 +4,6 @@ package com.example.diogo.petsearcher;
  * Created by Diogo on 17/04/2018.
  */
 
-import android.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,14 +20,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -146,12 +142,12 @@ public class FirebaseClient  {
         for(DataSnapshot ds :dataSnapshot.getChildren()){
             final  DataSnapshot dataSnap = ds;
             String id = dataSnap.child("id").getValue(String.class);
-            mStorageRef.child("picture_"+id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            mStorageRef.child("picture_Thumb"+id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     if (listView != null) {
                         SpottedAnimal pet = dataSnap.getValue(SpottedAnimal.class);
-                        pet.setPictureID(uri.toString());
+                        pet.setPictureIDThumb(uri.toString());
                         pet = petVerifier(pet);
                         if (animalList.size() > 0) {
                             customAdapter = new CustomAdapter(c, animalList);
@@ -174,13 +170,13 @@ public class FirebaseClient  {
                     }
                     if (mapView != null){
                         SpottedAnimal pet = dataSnap.getValue(SpottedAnimal.class);
-                        pet.setPictureID(uri.toString());
+                        pet.setPictureIDThumb(uri.toString());
                         pet = petVerifier(pet);
                         if (animalList.size() > 0 ) {
                             if(pet != null) {
                                 String[] coords = pet.getCoordLocation().split(",");
                                 String data = pet.id + "&&" + pet.getPrimaryC() + "&&" + pet.getSpotttedDate() +
-                                        "&&" + pet.getSpottedHour() + "&&" + pet.getBreed();
+                                        "&&" + pet.getSpottedHour() + "&&" + pet.getBreed() + "&&" + pet.getPictureIDThumb();
                                 addMarker(Double.parseDouble(coords[1]), Double.parseDouble(coords[0]), mapView, data);
                             }
                         } else {
